@@ -1,0 +1,33 @@
+# Application configuration
+spring:
+  # Application name
+  application:
+    name: SmartTravelAndTripManagementSystem
+
+  # Database configuration
+  datasource:
+    url: jdbc:postgresql://localhost:5432/smart_travel_management_db
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+
+  # JPA and Hibernate configuration
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+# Logging configuration
+logging:
+  # Logging levels
+  level:
+    root: INFO
+    com.bridgelabz.SmartTravelAndTripManagementSystem: DEBUG
+
+  # Generates log file
+  file:
+    name: logs/application.log
+
+  # Console log format
+  pattern:
+    console: "%msg%n"
