@@ -89,4 +89,17 @@ public class UserServiceImpl implements UserService {
 
         return new UserResponseDTO((update));
     }
+
+    // Deletes an existing user
+    @Override
+    public void deleteUser(long id) {
+
+        // Finds user by ID or throws exception if user does not exist
+        User user = userRepository.findById(id)
+                .orElseThrow(() ->
+                        new UserNotFoundException("User with ID " + id + " not found"));
+
+        // Deletes the user
+        userRepository.delete(user);
+    }
 }

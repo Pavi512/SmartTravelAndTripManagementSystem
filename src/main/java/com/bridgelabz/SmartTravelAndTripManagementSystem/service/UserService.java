@@ -19,4 +19,7 @@ public interface UserService {
 
     // Updates an existing user using ID
     public UserResponseDTO updateUser(long id, UserRequestDTO user);
+
+    // Deletes an existing user using ID
+    public void deleteUser(long id);
 }

@@ -49,4 +49,13 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> updateUser(@PathVariable long id,@Valid @RequestBody UserRequestDTO userRequestDTO){
         return new ResponseEntity<>(userService.updateUser(id, userRequestDTO), HttpStatus.OK);
     }
+
+    // Deletes an existing user using user ID, returns 204 NO CONTENT
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable long id) {
+
+        userService.deleteUser(id);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
