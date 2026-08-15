@@ -2,6 +2,7 @@ package com.bridgelabz.SmartTravelAndTripManagementSystem;
 
 import com.bridgelabz.SmartTravelAndTripManagementSystem.dto.UserRequestDTO;
 import com.bridgelabz.SmartTravelAndTripManagementSystem.dto.UserResponseDTO;
+import com.bridgelabz.SmartTravelAndTripManagementSystem.exception.UserNotFoundException;
 import com.bridgelabz.SmartTravelAndTripManagementSystem.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,5 +144,31 @@ public class UserServiceImplTest {
         assertEquals("updated.user@example.com", updated.getEmail());
         assertEquals("9123456780", updated.getPhone());
         assertEquals("User", updated.getRole());
+    }
+
+    // Test whether user is deleted correctly using ID
+    @Test
+    public void deleteUser() {
+
+        // Creates a test user
+        UserRequestDTO user = new UserRequestDTO();
+
+        user.setName("Delete User");
+        user.setEmail("delete.user@example.com");
+        user.setPassword("DeleteUser@123");
+        user.setPhone("9876543210");
+        user.setRole("User");
+
+        // Saves user and gets generated ID
+        UserResponseDTO saved = userService.registerUser(user);
+
+        // Deletes the user
+        userService.deleteUser(saved.getId());
+
+        // Verifies that user no longer exists
+        assertThrows(
+                UserNotFoundException.class,
+                () -> userService.getUserById(saved.getId())
+        );
     }
 }
