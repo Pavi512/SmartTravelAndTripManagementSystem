@@ -157,4 +157,33 @@ public class DestinationServiceImpl implements DestinationService {
                 travelPackage.getDestination().getId()
         );
     }
+
+
+    // 5. GET DESTINATION PACKAGES
+// GET /api/destinations/{id}/packages
+
+    @Override
+    public List<TravelPackageResponse> getDestinationPackages(
+            Long destinationId) {
+
+        // First check whether the destination exists
+        destinationRepository.findById(destinationId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Destination not found with id: "
+                                        + destinationId
+                        )
+                );
+
+        // Find all packages belonging to this destination
+        List<TravelPackage> packages =
+                travelPackageRepository.findByDestinationId(
+                        destinationId
+                );
+
+        // Convert TravelPackage entities into response DTOs
+        return packages.stream()
+                .map(this::convertToTravelPackageResponse)
+                .toList();
+    }
 }

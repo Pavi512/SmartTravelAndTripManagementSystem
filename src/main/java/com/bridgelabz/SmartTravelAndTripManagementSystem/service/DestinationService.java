@@ -20,4 +20,6 @@ public interface DestinationService {
     TravelPackageResponse addTravelPackage(
             Long destinationId,
             TravelPackageRequest request);
+
+    List<TravelPackageResponse> getDestinationPackages(Long destinationId);
 }

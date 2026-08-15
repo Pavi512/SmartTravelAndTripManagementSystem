@@ -98,4 +98,19 @@ public class DestinationController {
                 .body(response);
     }
 
+
+    // 5. GET DESTINATION PACKAGES
+// GET /api/destinations/{id}/packages
+
+    @GetMapping("/{id}/packages")
+    public ResponseEntity<List<TravelPackageResponse>>
+    getDestinationPackages(
+            @PathVariable Long id) {
+
+        List<TravelPackageResponse> responses =
+                destinationService.getDestinationPackages(id);
+
+        return ResponseEntity.ok(responses);
+    }
+
 }
