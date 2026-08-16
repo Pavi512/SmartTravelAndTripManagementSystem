@@ -2,6 +2,8 @@ package com.bridgelabz.SmartTravelAndTripManagementSystem.service;
 
 import com.bridgelabz.SmartTravelAndTripManagementSystem.dto.BookingRequestDTO;
 import com.bridgelabz.SmartTravelAndTripManagementSystem.dto.BookingResponseDTO;
+import com.bridgelabz.SmartTravelAndTripManagementSystem.dto.PaymentRequestDTO;
+import com.bridgelabz.SmartTravelAndTripManagementSystem.dto.PaymentResponseDTO;
 
 import java.util.List;
 
@@ -21,4 +23,9 @@ public interface BookingService {
 
     // Cancels an existing booking using its ID
     BookingResponseDTO cancelBooking(Long id);
+
+    PaymentResponseDTO makePayment(
+            Long bookingId,
+            PaymentRequestDTO paymentRequestDTO
+    );
 }

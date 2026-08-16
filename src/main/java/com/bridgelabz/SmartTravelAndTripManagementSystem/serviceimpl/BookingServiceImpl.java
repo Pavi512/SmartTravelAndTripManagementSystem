@@ -1,4 +1,10 @@
 package com.bridgelabz.SmartTravelAndTripManagementSystem.serviceimpl;
+import com.bridgelabz.SmartTravelAndTripManagementSystem.dto.PaymentRequestDTO;
+import com.bridgelabz.SmartTravelAndTripManagementSystem.dto.PaymentResponseDTO;
+import com.bridgelabz.SmartTravelAndTripManagementSystem.model.Payment;
+import com.bridgelabz.SmartTravelAndTripManagementSystem.model.PaymentStatus;
+import com.bridgelabz.SmartTravelAndTripManagementSystem.repository.PaymentRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bridgelabz.SmartTravelAndTripManagementSystem.dto.BookingRequestDTO;
 import com.bridgelabz.SmartTravelAndTripManagementSystem.dto.BookingResponseDTO;
@@ -18,6 +24,7 @@ import org.springframework.stereotype.Service;
 //import java.awt.print.Book;
 
 import java.awt.print.Book;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -29,16 +36,21 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
     private final TravelPackageRepository travelPackageRepository;
+    private final PaymentRepository paymentRepository;
 
     /**
      * Constructor injection for required repositories.
      */
-    public BookingServiceImpl(BookingRepository bookingRepository,
-                              UserRepository userRepository,
-                              TravelPackageRepository travelPackageRepository) {
+    public BookingServiceImpl(
+            BookingRepository bookingRepository,
+            UserRepository userRepository,
+            TravelPackageRepository travelPackageRepository,
+            PaymentRepository paymentRepository) {
+
         this.bookingRepository = bookingRepository;
         this.userRepository = userRepository;
         this.travelPackageRepository = travelPackageRepository;
+        this.paymentRepository = paymentRepository;
     }
 
     @Override
@@ -108,6 +120,61 @@ public class BookingServiceImpl implements BookingService {
         responseDTO.setStatus(booking.getStatus());
         responseDTO.setUserId(booking.getUser().getId());
         responseDTO.setTravelPackageId(booking.getTravelPackage().getId());
+
+        return responseDTO;
+    }
+
+    @Override
+    @Transactional
+    public PaymentResponseDTO makePayment(
+            Long bookingId,
+            PaymentRequestDTO paymentRequestDTO) {
+
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() ->
+                        new BookingNotFoundException(
+                                "Booking with Id " + bookingId + " not found"
+                        ));
+
+        if (booking.getStatus() == BookingStatus.CANCELLED) {
+            throw new IllegalArgumentException(
+                    "Payment cannot be made for a cancelled booking"
+            );
+        }
+
+        if (paymentRepository.existsByBookingId(bookingId)) {
+            throw new IllegalArgumentException(
+                    "Payment already exists for booking Id " + bookingId
+            );
+        }
+
+        if (!booking.getTotalAmount()
+                .equals(paymentRequestDTO.getAmount())) {
+
+            throw new IllegalArgumentException(
+                    "Payment amount must be equal to booking total amount"
+            );
+        }
+
+        Payment payment = new Payment();
+
+        payment.setAmount(paymentRequestDTO.getAmount());
+        payment.setPaymentDate(LocalDate.now());
+        payment.setStatus(PaymentStatus.SUCCESS);
+        payment.setBooking(booking);
+
+        Payment savedPayment = paymentRepository.save(payment);
+
+        booking.setStatus(BookingStatus.CONFIRMED);
+        bookingRepository.save(booking);
+
+        PaymentResponseDTO responseDTO = new PaymentResponseDTO();
+
+        responseDTO.setId(savedPayment.getId());
+        responseDTO.setAmount(savedPayment.getAmount());
+        responseDTO.setPaymentDate(savedPayment.getPaymentDate());
+        responseDTO.setStatus(savedPayment.getStatus());
+        responseDTO.setBookingId(booking.getId());
 
         return responseDTO;
     }

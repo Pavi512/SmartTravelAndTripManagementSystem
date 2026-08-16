@@ -17,9 +17,11 @@ public class Booking {
     @Column(nullable = false)
     private LocalDate bookingDate;
 
+    // Number of people included in the booking
     @Column(nullable = false)
     private Integer numberOfPeople;
 
+    // Total amount calculated for the booking
     @Column(nullable = false)
     private Double totalAmount;
 
@@ -38,8 +40,24 @@ public class Booking {
     @JoinColumn(name = "package_id", nullable = false)
     private TravelPackage travelPackage;
 
+    /*
+     * One booking can have only one payment.
+     *
+     * mappedBy = "booking" means that the Payment entity
+     * owns the relationship through its booking field.
+     */
+    @OneToOne(
+            mappedBy = "booking",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    private Payment payment;
+
+    // Default constructor required by JPA
     public Booking() {
     }
+
+    // Getter and Setter for id
 
     public Long getId() {
         return id;
@@ -49,6 +67,8 @@ public class Booking {
         this.id = id;
     }
 
+    // Getter and Setter for bookingDate
+
     public LocalDate getBookingDate() {
         return bookingDate;
     }
@@ -56,6 +76,8 @@ public class Booking {
     public void setBookingDate(LocalDate bookingDate) {
         this.bookingDate = bookingDate;
     }
+
+    // Getter and Setter for numberOfPeople
 
     public Integer getNumberOfPeople() {
         return numberOfPeople;
@@ -65,6 +87,8 @@ public class Booking {
         this.numberOfPeople = numberOfPeople;
     }
 
+    // Getter and Setter for totalAmount
+
     public Double getTotalAmount() {
         return totalAmount;
     }
@@ -72,6 +96,8 @@ public class Booking {
     public void setTotalAmount(Double totalAmount) {
         this.totalAmount = totalAmount;
     }
+
+    // Getter and Setter for booking status
 
     public BookingStatus getStatus() {
         return status;
@@ -81,6 +107,8 @@ public class Booking {
         this.status = status;
     }
 
+    // Getter and Setter for User
+
     public User getUser() {
         return user;
     }
@@ -89,11 +117,23 @@ public class Booking {
         this.user = user;
     }
 
+    // Getter and Setter for TravelPackage
+
     public TravelPackage getTravelPackage() {
         return travelPackage;
     }
 
     public void setTravelPackage(TravelPackage travelPackage) {
         this.travelPackage = travelPackage;
+    }
+
+    // Getter and Setter for Payment
+
+    public Payment getPayment() {
+        return payment;
+    }
+
+    public void setPayment(Payment payment) {
+        this.payment = payment;
     }
 }
