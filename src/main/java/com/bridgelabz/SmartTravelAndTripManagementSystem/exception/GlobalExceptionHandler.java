@@ -74,5 +74,42 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<ErrorResponse>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    // Handles booking not found exception, returns 404 NOT FOUND
+    @ExceptionHandler(BookingNotFoundException.class)
+    public ResponseEntity<ErrorResponse> bookingNotFoundException(
+            BookingNotFoundException exception) {
 
+        ErrorResponse errorResponse = new ErrorResponse();
+
+        errorResponse.setStatus(404);
+        errorResponse.setMessage(exception.getMessage());
+        errorResponse.setTimestamp(new Timestamp(System.currentTimeMillis()));
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+    // Handles travel package not found exception, returns 404 NOT FOUND
+    @ExceptionHandler(TravelPackageNotFoundException.class)
+    public ResponseEntity<ErrorResponse> travelPackageNotFoundException(
+            TravelPackageNotFoundException exception) {
+
+        ErrorResponse errorResponse = new ErrorResponse();
+
+        errorResponse.setStatus(404);
+        errorResponse.setMessage(exception.getMessage());
+        errorResponse.setTimestamp(new Timestamp(System.currentTimeMillis()));
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleResourceNotFoundException(
+            ResourceNotFoundException exception) {
+
+        ErrorResponse errorResponse = new ErrorResponse();
+
+        errorResponse.setStatus(404);
+        errorResponse.setMessage(exception.getMessage());
+        errorResponse.setTimestamp(new Timestamp(System.currentTimeMillis()));
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
 }
