@@ -38,4 +38,8 @@ public class User {
     // User role cannot be null
     @Column(length = 50, nullable = false)
     private String role;
+
+    public Long getId() {
+        return id;
+    }
 }
